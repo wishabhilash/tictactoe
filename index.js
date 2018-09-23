@@ -41,7 +41,7 @@ let currentTurn = null;
 
 function changeTurn() {
     if (currentTurn != 1 && currentTurn != 2) {
-        currentTurn = Math.trunc(Math.random()) + 1;
+        currentTurn = Math.trunc(Math.random()/0.5) + 1;
     }
     if (currentTurn == 2) {
         currentTurn = 1;
@@ -206,7 +206,8 @@ function checkVertical() {
 function checkCompletion() {
     for(let i=0; i < GRID_LENGTH; i++){
         for(let j = 0; j < GRID_LENGTH; j++){
-            if(grid[i][j] != 1 || grid[i][j] != 2){
+            if(grid[i][j] == 0){
+                console.log(grid);
                 return false;
             }
         }
@@ -231,14 +232,7 @@ function initializeAi(argument) {
 }
 
 function resetGame() {
-    let overlay = document.getElementsByClassName('overlay');
-    let attributes = overlay[0].setAttribute("class", "overlay hide");
-
-    grid = [];
-    initializeGrid();
-    initializeAi();
-    renderMainGrid();
-    addClickHandlers();
+    location.reload();
 }
 
 function aiMove() {
@@ -247,10 +241,7 @@ function aiMove() {
     let selectedCell = aiGrid[selectedIndex];
     grid[selectedCell[0]][selectedCell[1]] = 2;
     processMove(selectedCell[1], selectedCell[0])
-    // removeFromAiGrid(selectedCell[0], selectedCell[1]);
-    // renderMainGrid();
-    // addClickHandlers();
-    // changeTurn();
+    console.log(currentTurn)
 }
 
 function removeFromAiGrid(x, y) {
@@ -266,8 +257,17 @@ function removeFromAiGrid(x, y) {
 }
 
 function main() {
+    let overlay = document.getElementsByClassName('overlay');
+    let attributes = overlay[0].setAttribute("class", "overlay hide");
+
+    grid = [];
+    currentTurn = null;
     changeTurn();
-    resetGame();
+    initializeGrid();
+    initializeAi();
+    renderMainGrid();
+    addClickHandlers();
+    
     if (currentTurn == 2) {
         aiMove();
     }
