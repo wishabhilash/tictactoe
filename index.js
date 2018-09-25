@@ -19,7 +19,7 @@
  * 
  */
 let grid = [];
-const GRID_LENGTH = 3;
+const GRID_LENGTH = 4;
 let resultStatement = "";
 let aiGrid = []
 symbolToUser = {
@@ -159,15 +159,33 @@ function validateGameCompletion() {
 }
 
 function checkDiagonal() {
-    let diagonal1 = new Set([grid[0][0], grid[1][1], grid[2][2]]);
-    let diagonal2 = new Set([grid[0][2], grid[1][1], grid[2][0]]);
-    if (diagonal1.size == 1 || diagonal2.size == 1){
-        if(grid[1][1] != 0) {
-            return {
-                "result": symbolToUser[grid[1][1]]
-            }
-        }
+    let diagonal1Arr = [];
+    let diagonal2Arr = [];
+    for(let i = 0; i < GRID_LENGTH; i++) {
+        diagonal1Arr.push(grid[i][i]);
     }
+
+    for(let i = 0; i < GRID_LENGTH; i++) {
+        diagonal2Arr.push(grid[i][GRID_LENGTH-1-i]);
+    }
+
+    diagonal1 = new Set(diagonal1Arr);
+    diagonal2 = new Set(diagonal2Arr);
+
+    if (diagonal1.size == 1){
+        if(grid[0][0] != 0)
+            return {
+                "result": symbolToUser[grid[0][0]]
+            }
+    }
+
+    if (diagonal2.size == 1){
+        if(grid[0][GRID_LENGTH-1] != 0)
+            return {
+                "result": symbolToUser[grid[0][GRID_LENGTH-1]]
+            }
+    }
+
 
     return {
         "result": null
@@ -190,7 +208,10 @@ function checkHorizontal() {
 
 function checkVertical() {
     for(let column=0; column < GRID_LENGTH; column++) {
-        let columnArr = [grid[0][column], grid[1][column], grid[2][column]];
+        let columnArr = [];
+        for(let row = 0; row < GRID_LENGTH; row++){
+            columnArr.push(grid[row][column])
+        }
         let columnSet = new Set(columnArr);
         if (columnSet.size == 1 && columnArr[0] != 0) {
             return {
@@ -207,7 +228,6 @@ function checkCompletion() {
     for(let i=0; i < GRID_LENGTH; i++){
         for(let j = 0; j < GRID_LENGTH; j++){
             if(grid[i][j] == 0){
-                console.log(grid);
                 return false;
             }
         }
@@ -241,7 +261,6 @@ function aiMove() {
     let selectedCell = aiGrid[selectedIndex];
     grid[selectedCell[0]][selectedCell[1]] = 2;
     processMove(selectedCell[1], selectedCell[0])
-    console.log(currentTurn)
 }
 
 function removeFromAiGrid(x, y) {
